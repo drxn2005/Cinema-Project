@@ -31,90 +31,152 @@ namespace TaskMvcNewTampelt.DataAccess
         {
             base.OnModelCreating(modelBuilder);
 
-            // Movie <-> Actor (many-to-many via explicit join)
+            // =========================
+            // Actors <-> Movies (Many-to-Many) عبر MovieActor
+            // =========================
             modelBuilder.Entity<MovieActor>()
                 .HasKey(ma => new { ma.MovieId, ma.ActorId });
 
             modelBuilder.Entity<MovieActor>()
                 .HasOne(ma => ma.Movie)
                 .WithMany(m => m.MovieActors)
-                .HasForeignKey(ma => ma.MovieId);
+                .HasForeignKey(ma => ma.MovieId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<MovieActor>()
                 .HasOne(ma => ma.Actor)
                 .WithMany(a => a.MovieActors)
-                .HasForeignKey(ma => ma.ActorId);
+                .HasForeignKey(ma => ma.ActorId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // MovieImage
+            // =========================
+            // Category 1-* Movies
+            // =========================
+            modelBuilder.Entity<Movie>()
+                .HasOne(m => m.Category)
+                .WithMany(c => c.Movies)
+                .HasForeignKey(m => m.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict); 
+
+            // =========================
+            // Movie 1-* Images
+            // =========================
             modelBuilder.Entity<MovieImage>()
                 .HasOne(mi => mi.Movie)
                 .WithMany(m => m.Images)
-                .HasForeignKey(mi => mi.MovieId);
+                .HasForeignKey(mi => mi.MovieId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // Cinema -> Halls -> Seats
+            // =========================
+            // Cinema 1-* Halls
+            // =========================
             modelBuilder.Entity<CinemaHall>()
                 .HasOne(h => h.Cinema)
                 .WithMany(c => c.Halls)
-                .HasForeignKey(h => h.CinemaId);
+                .HasForeignKey(h => h.CinemaId)
+                .OnDelete(DeleteBehavior.Restrict); 
 
+            // =========================
+            // Hall 1-* Seats
+            // =========================
             modelBuilder.Entity<Seat>()
                 .HasOne(s => s.CinemaHall)
                 .WithMany(h => h.Seats)
-                .HasForeignKey(s => s.CinemaHallId);
+                .HasForeignKey(s => s.CinemaHallId)
+                .OnDelete(DeleteBehavior.Restrict); 
 
+            // =========================
+            // SeatType 1-* Seats
+            // =========================
             modelBuilder.Entity<Seat>()
                 .HasOne(s => s.SeatType)
                 .WithMany(st => st.Seats)
-                .HasForeignKey(s => s.SeatTypeId);
+                .HasForeignKey(s => s.SeatTypeId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // Screening
+            // =========================
+            // Movie 1-* Screenings    |   Hall 1-* Screenings
+            // =========================
             modelBuilder.Entity<Screening>()
                 .HasOne(sc => sc.Movie)
                 .WithMany(m => m.Screenings)
-                .HasForeignKey(sc => sc.MovieId);
+                .HasForeignKey(sc => sc.MovieId)
+                .OnDelete(DeleteBehavior.Restrict); 
 
             modelBuilder.Entity<Screening>()
                 .HasOne(sc => sc.CinemaHall)
                 .WithMany(h => h.Screenings)
-                .HasForeignKey(sc => sc.CinemaHallId);
+                .HasForeignKey(sc => sc.CinemaHallId)
+                .OnDelete(DeleteBehavior.Restrict); 
 
-            // Booking
+            // =========================
+            // Customer 1-* Bookings
+            // =========================
             modelBuilder.Entity<Booking>()
                 .HasOne(b => b.Customer)
                 .WithMany(c => c.Bookings)
-                .HasForeignKey(b => b.CustomerId);
+                .HasForeignKey(b => b.CustomerId)
+                .OnDelete(DeleteBehavior.Restrict);
 
+            // =========================
+            // Screening 1-* Bookings   (: NO ACTION )
+            // =========================
             modelBuilder.Entity<Booking>()
                 .HasOne(b => b.Screening)
                 .WithMany(s => s.Bookings)
-                .HasForeignKey(b => b.ScreeningId);
+                .HasForeignKey(b => b.ScreeningId)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            // Ticket (unique seat per screening)
+            // =========================
+            // Booking 1-* Tickets  
+            // =========================
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.Booking)
+                .WithMany(b => b.Tickets)
+                .HasForeignKey(t => t.BookingId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // =========================
+            // Screening 1-* Tickets (NO ACTION  multiple cascade paths)
+            // =========================
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.Screening)
+                .WithMany(s => s.Tickets)
+                .HasForeignKey(t => t.ScreeningId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // =========================
+            // Seat 1-* Tickets (NO ACTION)
+            // =========================
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.Seat)
+                .WithMany(s => s.Tickets) 
+                .HasForeignKey(t => t.SeatId)
+                .OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.Entity<Ticket>()
                 .HasIndex(t => new { t.ScreeningId, t.SeatId })
                 .IsUnique();
 
-            modelBuilder.Entity<Ticket>()
-                .HasOne(t => t.Booking)
-                .WithMany(b => b.Tickets)
-                .HasForeignKey(t => t.BookingId);
-
-            modelBuilder.Entity<Ticket>()
-                .HasOne(t => t.Screening)
-                .WithMany(s => s.Tickets)
-                .HasForeignKey(t => t.ScreeningId);
-
-            modelBuilder.Entity<Ticket>()
-                .HasOne(t => t.Seat)
-                .WithMany(s => s.Tickets)
-                .HasForeignKey(t => t.SeatId);
-
-            // Payment 1-1 Booking
+            // =========================
+            // Booking 1-1 Payment
+            // =========================
             modelBuilder.Entity<Payment>()
                 .HasOne(p => p.Booking)
                 .WithOne(b => b.Payment)
-                .HasForeignKey<Payment>(p => p.BookingId);
+                .HasForeignKey<Payment>(p => p.BookingId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Screening>()
+                .HasIndex(s => new { s.CinemaHallId, s.StartAt });
+
+            modelBuilder.Entity<Movie>()
+                .HasIndex(m => m.Name);
+
+            modelBuilder.Entity<CinemaHall>()
+                .HasIndex(h => new { h.CinemaId, h.Name })
+                .IsUnique(); 
         }
-    
-}
+
+    }
 }

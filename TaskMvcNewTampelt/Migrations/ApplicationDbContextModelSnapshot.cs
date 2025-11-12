@@ -157,7 +157,8 @@ namespace TaskMvcNewTampelt.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CinemaId");
+                    b.HasIndex("CinemaId", "Name")
+                        .IsUnique();
 
                     b.ToTable("CinemaHalls");
                 });
@@ -223,6 +224,8 @@ namespace TaskMvcNewTampelt.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("Name");
 
                     b.ToTable("Movies");
                 });
@@ -335,9 +338,9 @@ namespace TaskMvcNewTampelt.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CinemaHallId");
-
                     b.HasIndex("MovieId");
+
+                    b.HasIndex("CinemaHallId", "StartAt");
 
                     b.ToTable("Screenings");
                 });
@@ -439,13 +442,13 @@ namespace TaskMvcNewTampelt.Migrations
                     b.HasOne("TaskMvcNewTampelt.Models.Customer", "Customer")
                         .WithMany("Bookings")
                         .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("TaskMvcNewTampelt.Models.Screening", "Screening")
                         .WithMany("Bookings")
                         .HasForeignKey("ScreeningId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Customer");
@@ -458,7 +461,7 @@ namespace TaskMvcNewTampelt.Migrations
                     b.HasOne("TaskMvcNewTampelt.Models.Cinema", "Cinema")
                         .WithMany("Halls")
                         .HasForeignKey("CinemaId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Cinema");
@@ -469,7 +472,7 @@ namespace TaskMvcNewTampelt.Migrations
                     b.HasOne("TaskMvcNewTampelt.Models.Category", "Category")
                         .WithMany("Movies")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Category");
@@ -521,13 +524,13 @@ namespace TaskMvcNewTampelt.Migrations
                     b.HasOne("TaskMvcNewTampelt.Models.CinemaHall", "CinemaHall")
                         .WithMany("Screenings")
                         .HasForeignKey("CinemaHallId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("TaskMvcNewTampelt.Models.Movie", "Movie")
                         .WithMany("Screenings")
                         .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("CinemaHall");
@@ -540,13 +543,13 @@ namespace TaskMvcNewTampelt.Migrations
                     b.HasOne("TaskMvcNewTampelt.Models.CinemaHall", "CinemaHall")
                         .WithMany("Seats")
                         .HasForeignKey("CinemaHallId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("TaskMvcNewTampelt.Models.SeatType", "SeatType")
                         .WithMany("Seats")
                         .HasForeignKey("SeatTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("CinemaHall");
@@ -565,13 +568,13 @@ namespace TaskMvcNewTampelt.Migrations
                     b.HasOne("TaskMvcNewTampelt.Models.Screening", "Screening")
                         .WithMany("Tickets")
                         .HasForeignKey("ScreeningId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("TaskMvcNewTampelt.Models.Seat", "Seat")
                         .WithMany("Tickets")
                         .HasForeignKey("SeatId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Booking");

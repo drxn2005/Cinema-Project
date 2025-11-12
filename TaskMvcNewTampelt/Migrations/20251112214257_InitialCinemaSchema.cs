@@ -108,7 +108,7 @@ namespace TaskMvcNewTampelt.Migrations
                         column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -128,7 +128,7 @@ namespace TaskMvcNewTampelt.Migrations
                         column: x => x.CinemaId,
                         principalTable: "Cinemas",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -198,13 +198,13 @@ namespace TaskMvcNewTampelt.Migrations
                         column: x => x.CinemaHallId,
                         principalTable: "CinemaHalls",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Screenings_Movies_MovieId",
                         column: x => x.MovieId,
                         principalTable: "Movies",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -227,13 +227,13 @@ namespace TaskMvcNewTampelt.Migrations
                         column: x => x.CinemaHallId,
                         principalTable: "CinemaHalls",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Seats_SeatTypes_SeatTypeId",
                         column: x => x.SeatTypeId,
                         principalTable: "SeatTypes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -256,13 +256,12 @@ namespace TaskMvcNewTampelt.Migrations
                         column: x => x.CustomerId,
                         principalTable: "Customers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Bookings_Screenings_ScreeningId",
                         column: x => x.ScreeningId,
                         principalTable: "Screenings",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -313,14 +312,12 @@ namespace TaskMvcNewTampelt.Migrations
                         name: "FK_Tickets_Screenings_ScreeningId",
                         column: x => x.ScreeningId,
                         principalTable: "Screenings",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Tickets_Seats_SeatId",
                         column: x => x.SeatId,
                         principalTable: "Seats",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -334,9 +331,10 @@ namespace TaskMvcNewTampelt.Migrations
                 column: "ScreeningId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CinemaHalls_CinemaId",
+                name: "IX_CinemaHalls_CinemaId_Name",
                 table: "CinemaHalls",
-                column: "CinemaId");
+                columns: new[] { "CinemaId", "Name" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_MovieActors_ActorId",
@@ -354,15 +352,20 @@ namespace TaskMvcNewTampelt.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Movies_Name",
+                table: "Movies",
+                column: "Name");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Payments_BookingId",
                 table: "Payments",
                 column: "BookingId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Screenings_CinemaHallId",
+                name: "IX_Screenings_CinemaHallId_StartAt",
                 table: "Screenings",
-                column: "CinemaHallId");
+                columns: new[] { "CinemaHallId", "StartAt" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Screenings_MovieId",
