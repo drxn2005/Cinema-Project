@@ -32,7 +32,7 @@ namespace TaskMvcNewTampelt.DataAccess
             base.OnModelCreating(modelBuilder);
 
             // =========================
-            // Actors <-> Movies (Many-to-Many) عبر MovieActor
+            // Actors <-> Movies (Many-to-Many)  MovieActor
             // =========================
             modelBuilder.Entity<MovieActor>()
                 .HasKey(ma => new { ma.MovieId, ma.ActorId });
