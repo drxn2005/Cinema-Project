@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using TaskMvcNewTampelt.DataAccess;
+using TaskMvcNewTampelt.Services;
+
 namespace TaskMvcNewTampelt
 {
     public class Program
@@ -6,8 +10,13 @@ namespace TaskMvcNewTampelt
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddScoped<IImageStorage, LocalImageStorage>();
 
             var app = builder.Build();
 
@@ -25,9 +34,14 @@ namespace TaskMvcNewTampelt
             app.UseAuthorization();
 
             app.MapStaticAssets();
+
+            app.MapControllerRoute(
+                    name: "areas",
+                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}")
+                pattern: "{controller=Home}/{action=Index}/{id?}")
                 .WithStaticAssets();
 
             app.Run();

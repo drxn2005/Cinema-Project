@@ -5,6 +5,9 @@ namespace TaskMvcNewTampelt.DataAccess
 {
     public class ApplicationDbContext : DbContext
     {
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options) { }  
+
         public DbSet<Actor> Actors => Set<Actor>();
         public DbSet<Category> Categories => Set<Category>();
         public DbSet<Cinema> Cinemas => Set<Cinema>();
@@ -20,12 +23,12 @@ namespace TaskMvcNewTampelt.DataAccess
         public DbSet<Ticket> Tickets => Set<Ticket>();
         public DbSet<Payment> Payments => Set<Payment>();
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    base.OnConfiguring(optionsBuilder);
 
-            optionsBuilder.UseSqlServer("Server=.;Database=TaskCenima;Trusted_Connection=True;Encrypt=True;Trust Server Certificate=True");
-        }
+        //    optionsBuilder.UseSqlServer("Server=.;Database=TaskCenima;Trusted_Connection=True;Encrypt=True;Trust Server Certificate=True");
+        //}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

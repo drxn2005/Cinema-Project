@@ -24,6 +24,7 @@
     <Folder Include="Areas\Customer\Controllers\" />
     <Folder Include="Areas\Customer\Views\" />
     <Folder Include="Controllers\" />
+    <Folder Include="wwwroot\uploads\movies\" />
   </ItemGroup>
 
 </Project>
