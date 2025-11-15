@@ -1,0 +1,49 @@
+﻿@using TaskMvcNewTampelt.Models
+@model IEnumerable<Movie>
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "الأفلام";
+}
+
+<h2 class="mb-3">الأفلام</h2>
+
+<a asp-area="Admin" asp-controller="Movie" asp-action="Create" class="btn btn-primary mb-3">➕ إضافة فيلم</a>
+
+@if (TempData["ok"] != null)
+{
+    <div class="alert alert-success">@TempData["ok"]</div>
+}
+@if (TempData["err"] != null)
+{
+    <div class="alert alert-danger">@TempData["err"]</div>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr><th>#</th><th>الاسم</th><th>التصنيف</th><th>الحالة</th><th></th></tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            foreach (var m in Model)
+            {
+                <tr>
+                    <td>@m.Id</td>
+                    <td>@m.Name</td>
+                    <td>@m.Category?.Name</td>
+                    <td>@(m.Status ? "فعال" : "معطل")</td>
+                    <td>
+                        <a asp-area="Admin" asp-controller="Movie" asp-action="Edit" asp-route-id="@m.Id" class="btn btn-sm btn-warning">تعديل</a>
+                        <form asp-area="Admin" asp-controller="Movie" asp-action="Delete" asp-route-id="@m.Id" method="post" class="d-inline">
+                            <button class="btn btn-sm btn-danger" onclick="return confirm('حذف الفيلم؟')">حذف</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
