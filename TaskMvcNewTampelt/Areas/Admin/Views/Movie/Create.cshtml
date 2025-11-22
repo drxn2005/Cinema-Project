@@ -1,11 +1,13 @@
-﻿@model TaskMvcNewTampelt.Models.Movie
+﻿@using TaskMvcNewTampelt.Models
+@model Movie
 @{
-    ViewData["Title"] = ViewContext.RouteData.Values["action"]!.ToString() == "Create" ? "إضافة فيلم" : "تعديل فيلم";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "إضافة فيلم";
 }
+<h2 class="mb-3">إضافة فيلم</h2>
 
-<h2>@ViewData["Title"]</h2>
-
-<form asp-action="@ViewContext.RouteData.Values["action"]" method="post" enctype="multipart/form-data">
+<form asp-area="Admin" asp-controller="Movie" asp-action="Create"
+      method="post" enctype="multipart/form-data">
     @Html.AntiForgeryToken()
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -24,24 +26,24 @@
         <div class="col">
             <label asp-for="ReleaseDate" class="form-label"></label>
             <input asp-for="ReleaseDate" type="date" class="form-control" />
+            <span asp-validation-for="ReleaseDate" class="text-danger"></span>
         </div>
         <div class="col">
             <label class="form-label">التصنيف</label>
             <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select"></select>
+            <span asp-validation-for="CategoryId" class="text-danger"></span>
         </div>
-        <div class="col form-check mt-4">
-            <input asp-for="Status" class="form-check-input" />
-            <label asp-for="Status" class="form-check-label">فعال</label>
+        <div class="col d-flex align-items-end">
+            <div class="form-check">
+                <input asp-for="Status" class="form-check-input" />
+                <label asp-for="Status" class="form-check-label">فعال</label>
+            </div>
         </div>
     </div>
 
     <div class="mb-3">
         <label class="form-label">الصورة الرئيسية</label>
         <input type="file" name="mainImage" class="form-control" />
-        @if (!string.IsNullOrEmpty(Model.MainImg))
-        {
-            <img src="@Model.MainImg" style="height:90px" class="mt-2" />
-        }
     </div>
 
     <div class="mb-3">
@@ -52,10 +54,11 @@
     <div class="mb-3">
         <label class="form-label">الممثلون</label>
         <select name="actorIds" asp-items="ViewBag.Actors" class="form-select" multiple></select>
+        <div class="form-text">اضغط Ctrl/Shift لاختيار أكثر من ممثل.</div>
     </div>
 
-    <button class="btn btn-primary">حفظ</button>
-    <a asp-action="Index" class="btn btn-secondary">رجوع</a>
+    <button type="submit" class="btn btn-primary">حفظ</button>
+    <a asp-area="Admin" asp-controller="Movie" asp-action="Index" class="btn btn-secondary">رجوع</a>
 </form>
 
 @section Scripts {
