@@ -1,5 +1,5 @@
-﻿@using TaskMvcNewTampelt.Models
-@model Movie
+﻿@using TaskMvcNewTampelt.Areas.Admin.Domain
+@model MovieEditDto
 @{
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
     ViewData["Title"] = "تعديل فيلم";
@@ -7,10 +7,10 @@
 
 <h2 class="mb-3">تعديل فيلم</h2>
 
-<form asp-action="Edit" method="post" enctype="multipart/form-data">
+<form asp-area="Admin" asp-controller="Movie" asp-action="Edit"
+      method="post" enctype="multipart/form-data">
     @Html.AntiForgeryToken()
     <input type="hidden" asp-for="Id" />
-    <input type="hidden" asp-for="MainImg" />
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     <div class="mb-3">
@@ -28,10 +28,12 @@
         <div class="col">
             <label asp-for="ReleaseDate" class="form-label"></label>
             <input asp-for="ReleaseDate" type="date" class="form-control" />
+            <span asp-validation-for="ReleaseDate" class="text-danger"></span>
         </div>
         <div class="col">
             <label class="form-label">التصنيف</label>
             <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select"></select>
+            <span asp-validation-for="CategoryId" class="text-danger"></span>
         </div>
         <div class="col d-flex align-items-end">
             <div class="form-check">
@@ -43,34 +45,28 @@
 
     <div class="mb-3">
         <label class="form-label">الصورة الرئيسية</label>
-        <input type="file" name="mainImage" class="form-control" />
-        @if (!string.IsNullOrEmpty(Model.MainImg))
+        <!-- لازم الاسم يطابق خاصية الـDTO -->
+        <input type="file" name="MainImage" class="form-control" />
+        @if (!string.IsNullOrEmpty(Model.ExistingMainImg))
         {
-            <img src="@Model.MainImg" class="mt-2" style="height:90px" />
+            <img src="@Model.ExistingMainImg" class="mt-2" style="height:90px" />
         }
     </div>
 
     <div class="mb-3">
         <label class="form-label">صور إضافية</label>
-        <input type="file" name="subImages" class="form-control" multiple />
-        @if (Model.Images?.Any() == true)
-        {
-            <div class="mt-2 d-flex gap-2 flex-wrap">
-                @foreach (var img in Model.Images)
-                {
-                    <img src="@img.Img" style="height:70px" />
-                }
-            </div>
-        }
+        <input type="file" name="SubImages" class="form-control" multiple />
+        @* لو حابب تعرض الصور القديمة كمان، هاتها من الخدمة ومرّرها للـdto *@
     </div>
 
     <div class="mb-3">
         <label class="form-label">الممثلون</label>
-        <!-- لازم name=actorIds -->
-        <select name="actorIds" asp-items="ViewBag.Actors" class="form-select" multiple></select>
+        <!-- تقدر تستخدم asp-for أو name="ActorIds" -->
+        <select asp-for="ActorIds" asp-items="ViewBag.Actors" class="form-select" multiple></select>
+        <span class="form-text">استخدم Ctrl/Shift لاختيار أكثر من ممثل.</span>
     </div>
 
-    <button class="btn btn-primary">حفظ</button>
+    <button type="submit" class="btn btn-primary">حفظ</button>
     <a asp-area="Admin" asp-controller="Movie" asp-action="Index" class="btn btn-secondary">رجوع</a>
 </form>
 

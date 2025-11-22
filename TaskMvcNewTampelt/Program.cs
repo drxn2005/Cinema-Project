@@ -46,7 +46,7 @@ namespace TaskMvcNewTampelt
             var app = builder.Build();
 
             //_= SeedData.EnsureSeededAsync(app.Services);
-            await SeedData.EnsureSeededAsync(app.Services);
+           // await SeedData.EnsureSeededAsync(app.Services);
             await IdentitySeed.EnsureSeededAsync(app.Services);
 
             // Configure the HTTP request pipeline.
